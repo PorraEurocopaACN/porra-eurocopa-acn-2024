@@ -23,7 +23,7 @@ class MyApp:
         st.title(self.title)
 
     def render_content(self):
-        st.write("This is a simple object-oriented Streamlit app.")
+        st.write("This is a simple object-oriented Streamlit app. HOLAAAAAA")
         st.write("You can add more content and functionality here.")
 
     def username_textbox(self):
