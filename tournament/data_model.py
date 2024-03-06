@@ -97,3 +97,15 @@ class DataModel:
             print(f"Data from table {table_name}:")
             for row in rows:
                 print(row)
+
+
+class DataValidator:
+    def __init__(self, data_model: DataModel) -> None:
+        self.data_model = data_model
+
+    def check_duplicate_prediction(self, user_id, local, visitor):
+        # Execute SQL query to check for duplicate prediction
+        query = "SELECT * FROM tbl_user_predictions WHERE user_id = ? AND local = ? AND visitor = ?"
+        self.data_model.cursor.execute(query, (user_id, local, visitor))
+        result = self.data_model.cursor.fetchone()
+        return result is not None

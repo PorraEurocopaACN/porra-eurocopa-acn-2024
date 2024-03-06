@@ -1,7 +1,7 @@
 import streamlit as st
 import webbrowser
 import sqlite3
-from tournament.data_model import DataModel
+from tournament.data_model import DataModel, DataValidator
 import pandas as pd
 from typing import Optional
 
@@ -20,6 +20,7 @@ class MyApp:
         self.user_id: Optional[str] = None
         self.page_icon: str = "🚀"
         self.data_model: DataModel = DataModel()
+        self.data_validator: DataValidator = DataValidator(data_model=self.data_model)
 
     def run(self) -> None:
         """
@@ -130,11 +131,23 @@ class MyApp:
         # If form is submitted, update the database with the result
         if submitted:
             if self.user_id != "":
-                # Update the database with the result
-                self.data_model.cursor.execute(
-                    f"INSERT INTO tbl_user_predictions values (:user_id, :local, :visitor, :local_goals, :visitor_goals)",
-                    (self.user_id, local, visitor, local_score, visitor_score),
-                )
+                if self.data_validator.check_duplicate_prediction(
+                    self.user_id, local, visitor
+                ):
+                    self.data_model.cursor.execute(
+                        """
+                        UPDATE tbl_user_predictions 
+                        SET local_goals = ?, visitor_goals = ? 
+                        WHERE user_id = ? AND local = ? AND visitor = ?
+                        """,
+                        (local_score, visitor_score, self.user_id, local, visitor),
+                    )
+                else:
+                    # Update the database with the result
+                    self.data_model.cursor.execute(
+                        f"INSERT INTO tbl_user_predictions values (:user_id, :local, :visitor, :local_goals, :visitor_goals)",
+                        (self.user_id, local, visitor, local_score, visitor_score),
+                    )
                 self.data_model.connect.commit()
                 st.success("Result updated successfully! ✅")
             else:
