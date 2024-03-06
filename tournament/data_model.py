@@ -29,7 +29,6 @@ class DataModel:
                 [f"{column['name']} {column['type']} {column['constraints']}" for column in columns])
             primary_key_definition = f", PRIMARY KEY ({', '.join(primary_key)})" if primary_key else ""
             create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({column_definitions}{primary_key_definition});"
-            st.write("Create table sql:", create_table_sql)
             self.cursor.execute(create_table_sql)
         self.connect.commit()
 
