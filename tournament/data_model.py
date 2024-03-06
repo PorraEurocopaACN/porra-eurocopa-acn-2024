@@ -21,6 +21,7 @@ class DataModel:
         # Iterate over each table definition and create the tables
         for table_definition in table_definitions:
             table_name = table_definition["table_name"]
+            print(table_definition)
             columns = table_definition["columns"]
             primary_key = table_definition["primary_key"]
 
