@@ -28,6 +28,12 @@ class MyApp:
         """
         self.set_initial_page_interface()
         radio_option = self.set_basic_properties_interface()
+        # Text input for user ID
+        self.user_id = st.text_input("Enter User ID (e.g., john.doe):")
+        if self.data_validator.validate_user_id(self.user_id):
+            st.success("You are part of SCOA 😀!!")
+        else:
+            st.error(f"Your id doesn't seem to belong to the SCOA team 😔.")
         if radio_option == "Predictions":
             self.create_predictions_tab()
         if radio_option == "Results":
@@ -41,8 +47,6 @@ class MyApp:
         Creates the predictions tab.
         """
         self.set_stage_groups_interface()
-        # Text input for user ID
-        self.user_id = st.text_input("Enter User ID:")
         games_df = self.select_group()
         self.predict_games(games_df)
 

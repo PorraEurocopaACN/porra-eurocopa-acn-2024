@@ -103,9 +103,21 @@ class DataValidator:
     def __init__(self, data_model: DataModel) -> None:
         self.data_model = data_model
 
-    def check_duplicate_prediction(self, user_id, local, visitor):
+    def check_duplicate_prediction(self, user_id: str, local: str, visitor: str):
         # Execute SQL query to check for duplicate prediction
         query = "SELECT * FROM tbl_user_predictions WHERE user_id = ? AND local = ? AND visitor = ?"
         self.data_model.cursor.execute(query, (user_id, local, visitor))
         result = self.data_model.cursor.fetchone()
         return result is not None
+
+    def validate_user_id(self, user_id: str) -> bool:
+        acn_users_path = os.path.join(
+            Path(__file__).parent.parent, "data", "acn_users.xlsx"
+        )
+        df_acn_users = pd.read_excel(acn_users_path)
+
+        if user_id in df_acn_users["user_id"].values:
+            return True
+        else:
+            return False
+
