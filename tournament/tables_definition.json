@@ -1,0 +1,53 @@
+{
+    "tables": [
+        {
+            "table_name": "tbl_actual_groups",
+            "description": "Table for storing actual Eurocup 2024 groups and country information.",
+            "columns": [
+                {
+                    "name": "group_name",
+                    "type": "VARCHAR(20)",
+                    "constraints": "NOT NULL"
+                },
+                {
+                    "name": "country",
+                    "type": "VARCHAR(50)",
+                    "constraints": "NOT NULL"
+                }
+            ],
+            "primary_key": ["group_name", "country"]
+        },
+        {
+    "table_name": "tbl_user_predictions",
+    "description": "Table for storing user predictions for Eurocup 2024 matches.",
+    "columns": [
+        {
+            "name": "user_id",
+            "type": "VARCHAR(50)",
+            "constraints": "NOT NULL"
+        },
+        {
+            "name": "local",
+            "type": "VARCHAR(50)",
+            "constraints": "NOT NULL"
+        },
+        {
+            "name": "visitor",
+            "type": "VARCHAR(50)",
+            "constraints": "NOT NULL"
+        },
+        {
+            "name": "local_goals",
+            "type": "INTEGER",
+            "constraints": "NOT NULL"
+        },
+        {
+            "name": "visitor_goals",
+            "type": "INTEGER",
+            "constraints": "NOT NULL"
+        }
+    ],
+    "primary_key": ["username", "local", "visitor"]
+}
+    ]
+}
