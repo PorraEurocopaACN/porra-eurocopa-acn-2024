@@ -1,15 +1,19 @@
 import sqlite3
 import os
 import json
+from pathlib import Path
+import pandas as pd
 import streamlit as st
 
 
 class DataModel:
-    def __init__(self):
+    def __init__(self, populate_initial_tables=False):
         self.connect = sqlite3.connect("pwd.db")
         self.cursor = self.connect.cursor()
         self.create_tables()
-        self.select_all_from_tables() # TODO: remove
+        self.select_all_from_tables()
+        if populate_initial_tables:
+            self.populate_initial_tables()
 
     def create_tables(self):
         # Get the path to the JSON file
@@ -50,21 +54,11 @@ class DataModel:
             for row in rows:
                 print(row)
 
-    def hardcode_groups_table(self):
-        self.cursor.execute("DELETE FROM tbl_actual_groups;")
-
-        hardcoded_data = [
-            {"group_name": "A", "country": "Germany"},
-            {"group_name": "A", "country": "Scotland"},
-            {"group_name": "A", "country": "Hungary"},
-            {"group_name": "A", "country": "Switzerland"},
-            {"group_name": "B", "country": "Spain"},
-            {"group_name": "B", "country": "Croatia"},
-            {"group_name": "B", "country": "Italy"},
-            {"group_name": "B", "country": "Albania"}
-        ]
-        for row in hardcoded_data:
-            placeholders = ', '.join(['?' for _ in row.keys()])
-            insert_sql = f"INSERT INTO tbl_actual_groups ({', '.join(row.keys())}) VALUES ({placeholders});"
-            self.cursor.execute(insert_sql, list(row.values()))
+    def populate_groups_table(self):
+        games_calendar_path = os.path.join(Path(__file__).parent.parent, "data", "eurocup_games_calendar.xlsx")
+        df = pd.read_excel(games_calendar_path, sheet_name='group_stage')
+        df.to_sql(name='tbl_group_games', con=self.connect, if_exists='replace', index=False)
         self.connect.commit()
+
+    def populate_initial_tables(self):
+        self.populate_groups_table()
